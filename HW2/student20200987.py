@@ -30,7 +30,7 @@ for row in ws:
 	if row_id != 1 :
 		score = ws.cell(row = row_id, column = 7).value
 		index = grade.index(score)
-		lastIndex = index + grade.count(score) - 1
+		lastIndex = index + grade.count(score)
 		
 		if lastIndex <= length * 0.3:
 			ws.cell(row = row_id, column = 8).value = "A0"
