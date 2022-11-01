@@ -5,15 +5,31 @@ from datetime import datetime, date
 inputFile = sys.argv[1]
 outputFile = sys.argv[2]
 
+dic = {}
+
 days = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN']
 
-with open(inputFile, "rt") as f, open(outputFile, "wt") as fp:
+with open(inputFile, "rt") as f:
 	for line in f:
-		arr = line.split(",")
-		date = arr[1]
+		region, date, vehicles, trips = line.split(",")
 		datetime_date = datetime.strptime(date, '%m/%d/%Y')
-		arr[1] = days[datetime_date.weekday()]
+		date = days[datetime_date.weekday()]
+		trips = trips.strip()
 		
-		fp.write("%s,%s\t%s,%s" % (arr[0], arr[1], arr[2], arr[3]))
+		if region not in dic:
+			dic[region] = dict()
+		if date not in dic[region]:
+			dic[region][date] = dict()
+			dic[region][date]['vehicles'] = int(vehicles)
+			dic[region][date]['trips'] = int(trips)
+		else:
+			dic[region][date]['vehicles'] += int(vehicles)
+			dic[region][date]['trips'] += int(trips)
 
+with open(outputFile, "wt") as fp:
+	list = dic.keys()
+	for region in list:
+		weekList = dic[region].keys()
+		for week in weekList:
+			fp.write("%s,%s\t%d,%d\n" % (region, week, dic[region][week]['vehicles'], dic[region][week]['trips'])) 
 
